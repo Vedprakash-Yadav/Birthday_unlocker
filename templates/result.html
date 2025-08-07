@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result</title>
+</head>
+<body>
+    {% if success %}
+        <h2>🎉 Correct Guess!</h2>
+        <p>{{ info|safe }}</p>
+    {% else %}
+        <h2>❌ All attempts used!</h2>
+        <p>You can’t view the information anymore.</p>
+    {% endif %}
+    <a href="/dashboard">Back to Dashboard</a>
+</body>
+</html>

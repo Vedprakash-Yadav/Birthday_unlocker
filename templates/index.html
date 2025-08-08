@@ -1,36 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LuckByChance - Find a friend</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-pink-50 min-h-screen flex flex-col">
-  <!-- Header -->
-  <header class="bg-white shadow-md py-4 px-6 flex justify-between items-center">
-    <h1 class="text-3xl font-bold text-pink-500">💘 LuckByChance</h1>
-    <div>
-      <a href="/login" class="text-pink-600 font-semibold hover:underline mr-4">Login</a>
-      <a href="/register" class="bg-pink-500 text-white px-4 py-2 rounded-xl hover:bg-pink-600">Sign Up</a>
-    </div>
-  </header>
+{% extends "base.html" %}
+{% block title %}Welcome{% endblock %}
+{% block content %}
+<h1>Welcome to Birthday Unlocker 🎉</h1>
+<p>Unlock connections, discover people, and add a fun twist to birthdays!</p>
 
-  <!-- Hero Section -->
-  <section class="flex flex-col md:flex-row items-center justify-between flex-grow px-6 py-12 max-w-6xl mx-auto">
-    <div class="md:w-1/2 mb-10 md:mb-0 text-center md:text-left">
-      <h2 class="text-5xl font-bold text-pink-600 mb-6 leading-tight">Discover! through fun 💕</h2>
-      <p class="text-gray-700 text-lg mb-6">Playfully unlock your match’s secret birthday to get their Secret Message.</p>
-      <a href="/register" class="bg-pink-500 text-white px-6 py-3 rounded-full text-lg hover:bg-pink-600">Get Started</a>
-    </div>
-    <div class="md:w-1/2">
-      <img src="https://cdn-icons-png.flaticon.com/512/3564/3564633.png" alt="Love illustration" class="w-full max-w-sm mx-auto drop-shadow-xl">
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="text-center text-gray-500 py-6">
-    © 2025 LuckByChance. Made with 💖
-  </footer>
-</body>
-</html>
+<div style="margin-top: 20px;">
+    <a href="{{ url_for('login') }}">
+        <button>Login</button>
+    </a>
+    <a href="{{ url_for('register') }}">
+        <button>Register</button>
+    </a>
+</div>
+{% endblock %}

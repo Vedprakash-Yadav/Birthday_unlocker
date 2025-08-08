@@ -1,17 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import random
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key_here"
+app.secret_key = "secret123"
 
-# Fake user data for now
-users = [
-    {"username": "alice", "password": "123", "name": "Alice Johnson", "photo": "alice.jpg"},
-    {"username": "bob", "password": "123", "name": "Bob Smith", "photo": "bob.jpg"},
-    {"username": "charlie", "password": "123", "name": "Charlie Brown", "photo": "charlie.jpg"}
-]
+# Temporary "database" (in-memory)
+users = {
+    "john": {"name": "John Doe", "password": "123", "birthday": "2000-01-01", "photo": "https://via.placeholder.com/150"},
+    "jane": {"name": "Jane Smith", "password": "456", "birthday": "1998-05-10", "photo": "https://via.placeholder.com/150"}
+}
 
-# ---------- PUBLIC ROUTES ----------
+# -------------------- Public Routes --------------------
+
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -19,15 +19,27 @@ def home():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        username = request.form.get("username").strip()
-        password = request.form.get("password").strip()
-        name = request.form.get("name").strip()
-        photo = request.form.get("photo").strip()  # filename for now
+        username = request.form["username"]
+        name = request.form["name"]
+        password = request.form["password"]
+        confirm_password = request.form["confirm_password"]
 
-        if any(u["username"] == username for u in users):
-            return render_template("register.html", error="Username already exists")
+        if password != confirm_password:
+            flash("Passwords do not match!", "error")
+            return redirect(url_for("register"))
 
-        users.append({"username": username, "password": password, "name": name, "photo": photo})
+        if username in users:
+            flash("Username already exists!", "error")
+            return redirect(url_for("register"))
+
+        # Add user
+        users[username] = {
+            "name": name,
+            "password": password,
+            "birthday": "",
+            "photo": "https://via.placeholder.com/150"
+        }
+        flash("Registration successful! Please log in.", "success")
         return redirect(url_for("login"))
 
     return render_template("register.html")
@@ -35,73 +47,79 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form.get("username").strip()
-        password = request.form.get("password").strip()
+        username = request.form["username"]
+        password = request.form["password"]
 
-        user_data = next((u for u in users if u["username"] == username and u["password"] == password), None)
-        if user_data:
-            session["user"] = user_data["username"]
+        if username in users and users[username]["password"] == password:
+            session["username"] = username
             return redirect(url_for("dashboard"))
         else:
-            return render_template("login.html", error="Invalid username or password")
+            flash("Invalid username or password!", "error")
+            return redirect(url_for("login"))
 
     return render_template("login.html")
 
-# ---------- PROTECTED ROUTES ----------
+@app.route("/logout")
+def logout():
+    session.pop("username", None)
+    flash("Logged out successfully!", "success")
+    return redirect(url_for("home"))
+
+# -------------------- Logged-in Routes --------------------
+
 @app.route("/dashboard")
 def dashboard():
-    if "user" not in session:
+    if "username" not in session:
         return redirect(url_for("login"))
-    return render_template("dashboard.html", user=session["user"])
+    return render_template("dashboard.html", username=session["username"])
 
 @app.route("/profile/<username>")
 def profile(username):
-    if "user" not in session:
-        return redirect(url_for("login"))
-
-    user_data = next((u for u in users if u["username"] == username), None)
-    if not user_data:
-        return "User not found", 404
-
-    return render_template("profile.html", profile=user_data)
+    if username in users:
+        return render_template("profile.html", user=users[username], username=username)
+    else:
+        flash("User not found!", "error")
+        return redirect(url_for("dashboard"))
 
 @app.route("/search", methods=["GET", "POST"])
 def search():
-    if "user" not in session:
+    if "username" not in session:
         return redirect(url_for("login"))
 
     if request.method == "POST":
-        name = request.form.get("name").strip().lower()
-        user_data = next((u for u in users if name in u["name"].lower()), None)
-        if user_data:
-            return redirect(url_for("view_profile", username=user_data["username"]))
-        return render_template("search.html", not_found=True)
+        name = request.form["name"].lower()
+        for uname, details in users.items():
+            if details["name"].lower() == name:
+                return redirect(url_for("view_profile", username=uname))
+        flash("No user found with that name!", "error")
+        return redirect(url_for("search"))
 
-    return render_template("search.html", not_found=False)
+    return render_template("search.html")
 
 @app.route("/explore")
 def explore():
-    if "user" not in session:
+    if "username" not in session:
         return redirect(url_for("login"))
 
-    random_user = random.choice([u for u in users if u["username"] != session["user"]])
-    return redirect(url_for("view_profile", username=random_user["username"]))
+    # Pick a random user (not the current one)
+    other_users = [u for u in users.keys() if u != session["username"]]
+    if not other_users:
+        flash("No other users to explore!", "error")
+        return redirect(url_for("dashboard"))
+
+    random_user = random.choice(other_users)
+    return redirect(url_for("view_profile", username=random_user))
 
 @app.route("/view/<username>")
 def view_profile(username):
-    if "user" not in session:
+    if "username" not in session:
         return redirect(url_for("login"))
 
-    profile_user = next((u for u in users if u["username"] == username), None)
-    if not profile_user:
-        return "User not found", 404
-
-    return render_template("view_profile.html", profile=profile_user)
-
-@app.route("/logout")
-def logout():
-    session.pop("user", None)
-    return redirect(url_for("home"))
+    if username in users:
+        return render_template("view_profile.html", user=users[username], username=username)
+    else:
+        flash("User not found!", "error")
+        return redirect(url_for("dashboard"))
 
 if __name__ == "__main__":
     app.run(debug=True)

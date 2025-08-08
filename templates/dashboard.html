@@ -1,46 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Dashboard - LoveMatch</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-pink-100 min-h-screen py-10 px-4">
-  <div class="max-w-2xl mx-auto bg-white p-6 rounded-2xl shadow-xl">
-    <h1 class="text-3xl font-bold text-center text-pink-600 mb-6">Guess Their Birthday 🎉</h1>
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="center-text">
+    <h2>Hey {{ user }}</h2>
+</div>
 
-    {% if message %}
-      <div class="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
-        {{ message }}
-      </div>
-    {% endif %}
-
-    <form method="POST" class="space-y-4">
-      <div>
-        <label class="block text-gray-700 mb-1">Choose a user:</label>
-        <select name="target_user" class="w-full border rounded-xl p-2">
-          {% for username in users %}
-            {% if username != session['username'] %}
-              <option value="{{ username }}">{{ username }}</option>
-            {% endif %}
-          {% endfor %}
-        </select>
-      </div>
-
-      <div>
-        <label class="block text-gray-700 mb-1">Guess their birthday:</label>
-        <input type="date" name="guessed_birthday" class="w-full border rounded-xl p-2">
-      </div>
-
-      <button type="submit" class="w-full bg-pink-500 text-white py-2 rounded-xl hover:bg-pink-600">
-        Submit Guess 💌
-      </button>
-    </form>
-
-    <div class="mt-6 text-center">
-      <a href="/edit_profile" class="text-sm text-pink-600 font-semibold">Edit Your Profile</a> |
-      <a href="/logout" class="text-sm text-gray-600 hover:text-black">Logout</a>
-    </div>
-  </div>
-</body>
-</html>
+<div class="bottom-nav">
+    <a href="{{ url_for('profile', username=user) }}">
+        <img src="{{ url_for('static', filename='icons/profile.png') }}" alt="Profile">
+    </a>
+    <a href="{{ url_for('search') }}">
+        <img src="{{ url_for('static', filename='icons/search.png') }}" alt="Search by Name">
+    </a>
+    <a href="{{ url_for('explore') }}">
+        <img src="{{ url_for('static', filename='icons/explore.png') }}" alt="Explore">
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    text-align: center;
+}
+.center-text {
+    margin-top: 30vh;
+}
+.bottom-nav {
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+.bottom-nav img {
+    width: 40px;
+    height: 40px;
+}
+.profile-container {
+    margin-top: 20px;
+}
+.profile-pic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}

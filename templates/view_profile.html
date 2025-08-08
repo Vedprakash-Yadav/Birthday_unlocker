@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}View Profile{% endblock %}
+{% block content %}
+<div class="profile-container">
+    <img src="{{ url_for('static', filename='icons/' + profile.photo) }}" alt="{{ profile.name }}" class="profile-pic">
+    <h3>{{ profile.name }}</h3>
+</div>
+
+<div class="bottom-nav">
+    <a href="{{ url_for('dashboard') }}">
+        <img src="{{ url_for('static', filename='icons/home.png') }}" alt="Home">
+    </a>
+    <a href="#">
+        <img src="{{ url_for('static', filename='icons/guess.png') }}" alt="Guess Birthday">
+    </a>
+    <a href="#">
+        <img src="{{ url_for('static', filename='icons/spin.png') }}" alt="Spin Wheel">
+    </a>
+    <a href="{{ url_for('explore') }}">
+        <img src="{{ url_for('static', filename='icons/next.png') }}" alt="Next">
+    </a>
+</div>
+{% endblock %}

@@ -4,11 +4,26 @@ import random
 app = Flask(__name__)
 app.secret_key = "secret123"
 
-# Temporary "database" (in-memory)
+# Simple in-memory user store (replace with SQLite later)
 users = {
-    "john": {"name": "John Doe", "password": "123", "birthday": "2000-01-01", "photo": "https://via.placeholder.com/150"},
-    "jane": {"name": "Jane Smith", "password": "456", "birthday": "1998-05-10", "photo": "https://via.placeholder.com/150"}
+    "alice": {
+        "password": "pass123",
+        "photo": "/static/photos/alice.png"
+    },
+    "bob": {
+        "password": "pass123",
+        "photo": "/static/photos/bob.png"
+    },
+    "charlie": {
+        "password": "pass123",
+        "photo": "/static/photos/charlie.png"
+    },
+    "david": {
+        "password": "pass123",
+        "photo": "/static/photos/david.png"
+    }
 }
+
 
 # -------------------- Public Routes --------------------
 
@@ -76,7 +91,7 @@ def dashboard():
 @app.route("/profile/<username>")
 def profile(username):
     if username in users:
-        return render_template("profile.html", user=users[username], username=username)
+        return render_template("profile.html", username=username)
     else:
         flash("User not found!", "error")
         return redirect(url_for("dashboard"))

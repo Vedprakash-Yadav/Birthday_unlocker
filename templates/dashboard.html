@@ -2,11 +2,11 @@
 {% block title %}Dashboard{% endblock %}
 {% block content %}
 <div class="center-text">
-    <h2>Hey {{ user }}</h2>
+    <h2>Hey {{ username }}</h2>
 </div>
 
 <div class="bottom-nav">
-    <a href="{{ url_for('profile', username=user) }}">
+    <a href="{{ url_for('profile',username=username) }}">
         <img src="{{ url_for('static', filename='icons/profile.png') }}" alt="Profile">
     </a>
     <a href="{{ url_for('search') }}">

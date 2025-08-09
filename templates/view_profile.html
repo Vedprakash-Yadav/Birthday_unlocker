@@ -2,8 +2,8 @@
 {% block title %}View Profile{% endblock %}
 {% block content %}
 <div class="profile-container">
-    <img src="{{ url_for('static', filename='icons/' + profile.photo) }}" alt="{{ profile.name }}" class="profile-pic">
-    <h3>{{ profile.name }}</h3>
+    <img src="{{ url_for('static', filename='icons/abc.png') }}" alt="{{username}}" class="profile-pic">
+    <h3>{{ username }}</h3>
 </div>
 
 <div class="bottom-nav">

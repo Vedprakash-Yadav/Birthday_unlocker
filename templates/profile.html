@@ -2,9 +2,10 @@
 {% block title %}Profile{% endblock %}
 {% block content %}
 <div class="profile-container">
-    <img src="{{ url_for('static', filename='icons/' + profile.photo) }}" alt="{{ profile.name }}" class="profile-pic">
-    <h3>{{ profile.name }}</h3>
-    <p>Username: {{ profile.username }}</p>
+    <img src="{{ url_for('static', filename='icons/profile.photo') }}" alt="{{ username }}" class="profile-pic">
+    <h3>{{ username }}</h3>
+    <p>Username: {{ username }}</p>
 </div>
+
 <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
 {% endblock %}
